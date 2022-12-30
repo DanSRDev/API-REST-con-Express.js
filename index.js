@@ -1,6 +1,8 @@
 const express = require('express');
 const routerApi = require('./routes');
 
+const { logErrors, errorHandler } = require('./middlewares/error.handler');
+
 const app = express();
 const port = 3000;
 
@@ -15,6 +17,11 @@ app.get('/nueva-ruta', (req, res) => {
 });
 
 routerApi(app);
+
+// El orden en que se pongan los middlewares sera el orden en que se ejecuten
+// Como errorHandler no tiene next, ya no ejecuta lo que tiene despues, por eso se coloca despues del logErrors
+app.use(logErrors);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
